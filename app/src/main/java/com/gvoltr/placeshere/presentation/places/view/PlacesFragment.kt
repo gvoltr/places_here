@@ -142,7 +142,10 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
             map.clear()
             places.forEach {
                 map.addMarker(
-                    MarkerOptions().position(it.location.toLatLng()).title(it.title)
+                    MarkerOptions()
+                        .position(it.location.toLatLng())
+                        .title(it.title)
+                        .snippet(it.categoryTitle)
                 )
             }
         }
