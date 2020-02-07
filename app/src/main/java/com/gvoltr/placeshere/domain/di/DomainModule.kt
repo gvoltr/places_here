@@ -1,12 +1,12 @@
 package com.gvoltr.placeshere.domain.di
 
-import com.gvoltr.placeshere.domain.GetAddressInteractor
-import com.gvoltr.placeshere.domain.GetPlaceCategoriesInteractor
-import com.gvoltr.placeshere.domain.GetPlacesByCategoryInteractor
+import com.gvoltr.placeshere.domain.*
 import org.koin.dsl.module
 
 val domainModule = module {
-    factory { GetPlaceCategoriesInteractor(get()) }
-    factory { GetPlacesByCategoryInteractor(get()) }
-    factory { GetAddressInteractor(get()) }
+    factory { PlaceCategoriesInteractor(get(), get()) }
+    factory { PlacesByCategoryInteractor(get(), get()) }
+    factory { AddressInteractor(get(), get()) }
+    factory { LocationInteractor(get(), get()) }
+    factory { PermissionInteractor(get()) }
 }

@@ -1,8 +1,10 @@
 package com.gvoltr.placeshere.data.restapi.places
 
 import com.gvoltr.placeshere.data.entity.category.PlaceCategory
+import com.gvoltr.placeshere.data.entity.location.Location
 import com.gvoltr.placeshere.data.entity.place.Place
 import com.gvoltr.placeshere.data.restapi.places.parse.PlacesByCategoryParser
+import com.gvoltr.placeshere.data.restapi.toHereLocation
 import io.reactivex.Single
 
 class HerePlacesDataSource(
@@ -12,30 +14,22 @@ class HerePlacesDataSource(
 ) : PlacesDataSource {
 
     override fun getCategories(
-        latitude: String,
-        longitude: String
+        location: Location
     ): Single<List<PlaceCategory>> {
         return placesService.getPlaceCategories(
             apiKey = apiKey,
-            location = toHereLocation(latitude, longitude)
-        )
-            .map { it.items }
+            location = location.toHereLocation()
+        ).map { it.items }
     }
 
     override fun getPlacesByCategory(
         categoryId: String,
-        latitude: String,
-        longitude: String
+        location: Location
     ): Single<List<Place>> {
         return placesService.getPlaces(
             apiKey = apiKey,
-            location = toHereLocation(latitude, longitude),
+            location = location.toHereLocation(),
             category = categoryId
-        )
-            .map { placesByCategoryParser.toPlaceCategories(it.string()) }
+        ).map { placesByCategoryParser.toPlaceCategories(it.string()) }
     }
-
-    //TODO: clean this to be DRY
-    private fun toHereLocation(latitude: String, longitude: String) = "$latitude,$longitude"
-
 }

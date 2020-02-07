@@ -5,7 +5,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 private val viewModelsModule = module {
-    viewModel { PlacesViewModel(get(), get(), get()) }
+    viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
 }
 
 val presentationModule = viewModelsModule
