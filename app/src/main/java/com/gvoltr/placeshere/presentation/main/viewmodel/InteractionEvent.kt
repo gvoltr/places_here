@@ -1,4 +1,4 @@
-package com.gvoltr.placeshere.presentation.places.viewmodel
+package com.gvoltr.placeshere.presentation.main.viewmodel
 
 sealed class InteractionEvent {
 
