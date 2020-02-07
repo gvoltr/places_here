@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gvoltr.placeshere.data.entity.category.PlaceCategory
-import com.gvoltr.placeshere.domain.*
+import com.gvoltr.placeshere.domain.LocationInteractor
+import com.gvoltr.placeshere.domain.PermissionInteractor
+import com.gvoltr.placeshere.domain.PlaceCategoriesInteractor
+import com.gvoltr.placeshere.domain.PlacesByCategoryInteractor
 import com.gvoltr.placeshere.presentation.utils.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,7 +17,6 @@ import io.reactivex.schedulers.Schedulers
 class PlacesViewModel(
     private val placeCategoriesInteractor: PlaceCategoriesInteractor,
     private val placesByCategoryInteractor: PlacesByCategoryInteractor,
-    private val addressInteractor: AddressInteractor,
     private val locationInteractor: LocationInteractor,
     private val permissionInteractor: PermissionInteractor
 ) : ViewModel() {
@@ -22,12 +24,9 @@ class PlacesViewModel(
     private val subscriptions = CompositeDisposable()
     //Used to pass events to the view that require user interaction e.g. location request
     private val interactionLiveData = MutableLiveData<Event<InteractionEvent>>()
+    private val placeCategoriesLivaData = MutableLiveData<List<PlaceCategory>>()
 
     init {
-//        loadPlaceCategories()
-//        getCurrentAddress()
-//        categorySelected(PlaceCategory("landmark-attraction", "", ""))
-
         listenLocation()
     }
 
@@ -37,9 +36,7 @@ class PlacesViewModel(
         super.onCleared()
     }
 
-    fun getInteractionEventsLiveData(): LiveData<Event<InteractionEvent>> {
-        return interactionLiveData
-    }
+    fun getInteractionEventsLiveData(): LiveData<Event<InteractionEvent>> = interactionLiveData
 
     fun locationAllowed() {
         listenLocation()
@@ -81,7 +78,6 @@ class PlacesViewModel(
             .subscribe(
                 {
                     Log.d("DDD", "new location in view model $it")
-                    getCurrentAddress()
                     loadPlaceCategories()
                 },
                 {
@@ -93,21 +89,6 @@ class PlacesViewModel(
 
     private fun requestLocation() {
         interactionLiveData.value = Event(InteractionEvent.RequestLocation)
-    }
-
-    private fun getCurrentAddress() {
-        subscriptions.add(
-            addressInteractor.getAddressOfCurrentLocation()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("DDD", "Address loaded $it")
-                    },
-                    {
-                        it.printStackTrace()
-                    })
-        )
     }
 
     private fun loadPlaceCategories() {

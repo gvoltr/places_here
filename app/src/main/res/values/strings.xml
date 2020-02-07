@@ -3,4 +3,7 @@
     <string name="ok">OK</string>
     <string name="label_permission_required">Permission required</string>
     <string name="location_permission_required_message">Please provide location permission to use app functionality</string>
+    <string name="label_you_are_here">You are here</string>
+    <string name="label_location_details">Location: lat:%1$f lon:%2$f</string>
+    <string name="label_address_details">Address: %1$s</string>
 </resources>
