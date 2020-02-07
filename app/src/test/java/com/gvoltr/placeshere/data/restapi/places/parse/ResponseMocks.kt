@@ -1,5 +1,6 @@
 package com.gvoltr.placeshere.data.restapi.places.parse
 
+import com.gvoltr.placeshere.data.entity.location.Location
 import com.gvoltr.placeshere.data.entity.place.Place
 
 const val validGetPlacesJson = "{\n" +
@@ -92,23 +93,21 @@ const val validGetPlacesJson = "{\n" +
 
 val validParsedPlaces = listOf(
     Place(
-        latitude = "52.51629",
-        longitude = "13.37817",
         title = "Brandenburg Gate",
         vicinity = "Pariser Platz<br/>Mitte, 10117 Berlin",
         icon = "https://download.vcdn.data.here.com/p/d/places2/icons/categories/38.icon",
         detailsLink = "https://places.ls.hereapi.com/places/v1/places/276u33db-8ee2e0de906e459cbade0593986debe9;context=Zmxvdy1pZD1mNTYyYmJjMy03MmRhLTVhZjctOGE3MC05ZTE0NDhmMmYwMmNfMTU4MDk5NDc4ODQwOV8wXzYwMDAmcmFuaz0w?app_id=LKO34glU2MBEVbcOD5mQ&app_code=A2ta_nQ8HRYwenju5HFG5Q",
         categoryId = "landmark-attraction",
-        categoryTitle = "Landmark/Attraction"
+        categoryTitle = "Landmark/Attraction",
+        location = Location(52.51629, 13.37817)
     ),
     Place(
-        latitude = "52.51373",
-        longitude = "13.37976",
         title = "Holocaust Memorial",
         vicinity = "Cora-Berliner-Straße 1<br/>Mitte, 10117 Berlin",
         icon = "https://download.vcdn.data.here.com/p/d/places2/icons/categories/10.icon",
         detailsLink = "https://places.ls.hereapi.com/places/v1/places/276u33de-df7d57fd38494a93b2018fe549a0fd75;context=Zmxvdy1pZD1mNTYyYmJjMy03MmRhLTVhZjctOGE3MC05ZTE0NDhmMmYwMmNfMTU4MDk5NDc4ODQwOV8wXzYwMDAmcmFuaz0x?app_id=LKO34glU2MBEVbcOD5mQ&app_code=A2ta_nQ8HRYwenju5HFG5Q",
         categoryId = "museum",
-        categoryTitle = "Museum"
+        categoryTitle = "Museum",
+        location = Location(52.51373, 13.37976)
     )
 )

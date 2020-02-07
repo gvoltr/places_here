@@ -1,6 +1,7 @@
 package com.gvoltr.placeshere.data.restapi.address.parse
 
 import com.gvoltr.placeshere.data.entity.address.Address
+import com.gvoltr.placeshere.data.entity.location.Location
 
 val validGetAddressResponse = "{\n" +
         "  \"Response\": {\n" +
@@ -105,4 +106,7 @@ val validGetAddressResponse = "{\n" +
         "  }\n" +
         "}"
 
-val validParsedAddress = Address("425 W Randolph St, Chicago, IL 60606, United States")
+val validParsedAddress = Address(
+    fullDescription = "425 W Randolph St, Chicago, IL 60606, United States",
+    displayPosition = Location(41.88432, -87.63877)
+)

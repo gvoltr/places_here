@@ -3,6 +3,7 @@ package com.gvoltr.placeshere.data.restapi.places.parse
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.gvoltr.placeshere.data.entity.location.Location
 import com.gvoltr.placeshere.data.entity.place.Place
 
 
@@ -28,11 +29,11 @@ class PlacesByCategoryParser {
     }
 
     private fun parsePlaceInfo(item: JsonObject) : Place {
-        var latitude = ""
-        var longitude = ""
+        var latitude: Double
+        var longitude: Double
         (item.get("position") as JsonArray).let {
-            latitude = it[0].asString
-            longitude = it[1].asString
+            latitude = it[0].asDouble
+            longitude = it[1].asDouble
         }
 
         val title = item.get("title").asString ?: ""
@@ -43,14 +44,13 @@ class PlacesByCategoryParser {
         val categoryId = item.get("category")?.asJsonObject?.get("id")?.asString ?: ""
 
         return Place(
-            latitude = latitude,
-            longitude = longitude,
             title = title,
             icon = icon,
             vicinity = vicinity,
             detailsLink = detailsLink,
             categoryTitle = category,
-            categoryId = categoryId
+            categoryId = categoryId,
+            location = Location(latitude, longitude)
         )
     }
 }
