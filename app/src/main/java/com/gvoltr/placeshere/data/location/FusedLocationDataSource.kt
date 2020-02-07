@@ -17,7 +17,7 @@ class FusedLocationDataSource(
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     private var locationRequest: LocationRequest = LocationRequest().apply {
-        interval = 30000 //10s
+        interval = 10000 //10s
         fastestInterval = 5000 //5s
         priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
     }

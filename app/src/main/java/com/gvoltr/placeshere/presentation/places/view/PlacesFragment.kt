@@ -134,7 +134,7 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     private fun moveMapToLocation(location: Location) {
         // initialize my location when we are sure there is location permission granted
         map?.isMyLocationEnabled = true
-        map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), 13f))
+        map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), 15f))
     }
 
     private fun drawPlacesOnMap(places: List<Place>) {
@@ -151,12 +151,12 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     private fun displayViewMode(viewMode: ViewMode) {
         when (viewMode) {
             is ViewMode.MapMode -> {
-                mapFragment.visibility = View.VISIBLE
+                mapFrameLayout.visibility = View.VISIBLE
                 placesList.visibility = View.GONE
                 tabLayout.selectTab(tabLayout.getTabAt(0))
             }
             is ViewMode.ListMode -> {
-                mapFragment.visibility = View.GONE
+                mapFrameLayout.visibility = View.GONE
                 placesList.visibility = View.VISIBLE
                 tabLayout.selectTab(tabLayout.getTabAt(1))
             }

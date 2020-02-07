@@ -94,6 +94,8 @@ class PlacesViewModel(
                     },
                     {
                         it.printStackTrace()
+                        //retry with next location update in case of error
+                        getCategoriesForLocation()
                     })
         )
     }
