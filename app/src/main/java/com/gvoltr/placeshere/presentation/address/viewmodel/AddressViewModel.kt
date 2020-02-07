@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gvoltr.placeshere.data.entity.address.Address
-import com.gvoltr.placeshere.domain.AddressInteractor
+import com.gvoltr.placeshere.domain.address.AddressInteractor
 import com.gvoltr.placeshere.presentation.utils.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

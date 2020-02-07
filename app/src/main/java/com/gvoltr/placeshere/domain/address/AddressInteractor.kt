@@ -1,8 +1,9 @@
-package com.gvoltr.placeshere.domain
+package com.gvoltr.placeshere.domain.address
 
 import com.gvoltr.placeshere.data.entity.address.Address
 import com.gvoltr.placeshere.data.location.LocationDataSource
 import com.gvoltr.placeshere.data.restapi.address.AddressDataSource
+import com.gvoltr.placeshere.domain.Response
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 

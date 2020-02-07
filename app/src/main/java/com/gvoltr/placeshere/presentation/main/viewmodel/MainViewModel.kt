@@ -3,8 +3,8 @@ package com.gvoltr.placeshere.presentation.main.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gvoltr.placeshere.domain.LocationInteractor
-import com.gvoltr.placeshere.domain.PermissionInteractor
+import com.gvoltr.placeshere.domain.location.LocationInteractor
+import com.gvoltr.placeshere.domain.permission.PermissionInteractor
 import com.gvoltr.placeshere.presentation.utils.Event
 
 class MainViewModel(

@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.gvoltr.placeshere.data.entity.category.PlaceCategory
 import com.gvoltr.placeshere.data.entity.location.Location
 import com.gvoltr.placeshere.data.entity.place.Place
-import com.gvoltr.placeshere.domain.LocationInteractor
-import com.gvoltr.placeshere.domain.PlaceCategoriesInteractor
-import com.gvoltr.placeshere.domain.PlacesByCategoryInteractor
+import com.gvoltr.placeshere.domain.location.LocationInteractor
+import com.gvoltr.placeshere.domain.places.PlaceCategoriesInteractor
+import com.gvoltr.placeshere.domain.places.PlacesByCategoryInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

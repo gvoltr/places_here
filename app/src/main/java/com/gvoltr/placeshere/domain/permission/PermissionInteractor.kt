@@ -1,4 +1,4 @@
-package com.gvoltr.placeshere.domain
+package com.gvoltr.placeshere.domain.permission
 
 import com.gvoltr.placeshere.data.permission.PermissionDataSource
 

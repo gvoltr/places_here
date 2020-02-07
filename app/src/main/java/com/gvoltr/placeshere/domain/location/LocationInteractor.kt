@@ -1,4 +1,4 @@
-package com.gvoltr.placeshere.domain
+package com.gvoltr.placeshere.domain.location
 
 import com.gvoltr.placeshere.data.location.LocationDataSource
 import com.gvoltr.placeshere.data.location.LocationManager
