@@ -6,4 +6,6 @@
     <string name="label_you_are_here">You are here</string>
     <string name="label_location_details">Location: lat:%1$f lon:%2$f</string>
     <string name="label_address_details">Address: %1$s</string>
+    <string name="label_on_map">On map</string>
+    <string name="label_as_list">As list</string>
 </resources>

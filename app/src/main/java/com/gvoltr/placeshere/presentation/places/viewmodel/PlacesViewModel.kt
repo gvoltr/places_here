@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gvoltr.placeshere.data.entity.category.PlaceCategory
+import com.gvoltr.placeshere.data.entity.location.Location
 import com.gvoltr.placeshere.data.entity.place.Place
 import com.gvoltr.placeshere.domain.LocationInteractor
 import com.gvoltr.placeshere.domain.PlaceCategoriesInteractor
@@ -24,6 +25,10 @@ class PlacesViewModel(
     private val subscriptions = CompositeDisposable()
     private val placeCategoriesLivaData = MutableLiveData<List<PlaceCategoryItem>>()
     private val placesLiveData = MutableLiveData<List<Place>>()
+    //one time location event for pointing map to the right place
+    private val currentLocationLiveData = MutableLiveData<Location>()
+    //Define what should be shown map or list
+    private val viewModeLiveData = MutableLiveData<ViewMode>()
     //In memory cache for loaded places. Used for easy places deletion by category
     private val loadedPlaces = HashMap<String, List<Place>>()
 
@@ -40,6 +45,10 @@ class PlacesViewModel(
 
     fun getPlacesLiveData(): LiveData<List<Place>> = placesLiveData
 
+    fun getCurrentLocationLiveData(): LiveData<Location> = currentLocationLiveData
+
+    fun getViewModeLiveData(): LiveData<ViewMode> = viewModeLiveData
+
     fun categorySelected(placeCategoryItem: PlaceCategoryItem) {
         placeCategoryItem.checked = true
         loadCategory(placeCategoryItem.placeCategory)
@@ -50,12 +59,21 @@ class PlacesViewModel(
         removePlacesOfCategory(placeCategoryItem.placeCategory)
     }
 
+    fun mapModeSelected() {
+        viewModeLiveData.value = ViewMode.MapMode
+    }
+
+    fun listModeSelected() {
+        viewModeLiveData.value = ViewMode.ListMode
+    }
+
     private fun getCategoriesForLocation() {
         //load place categories after we got first location update to be sure that location is available
         subscriptions.add(locationInteractor.getLocationUpdates()
             .firstOrError()
             .subscribe(
                 {
+                    currentLocationLiveData.value = it
                     loadPlaceCategories()
                 },
                 {
