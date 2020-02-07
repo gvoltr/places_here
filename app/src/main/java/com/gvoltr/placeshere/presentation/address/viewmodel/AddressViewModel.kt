@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gvoltr.placeshere.data.entity.address.Address
 import com.gvoltr.placeshere.domain.AddressInteractor
+import com.gvoltr.placeshere.presentation.utils.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 
@@ -16,6 +17,7 @@ class AddressViewModel(
     private val LOG_TAG = "AddressViewModel"
     private var subscription: Disposable? = null
     private val addressLiveData = MutableLiveData<Address>()
+    private val exceptionsLiveData = MutableLiveData<Event<Throwable>>()
 
     init {
         subscribeToAddressChanges()
@@ -26,14 +28,22 @@ class AddressViewModel(
         super.onCleared()
     }
 
-    fun getAddressLiveData() : LiveData<Address> = addressLiveData
+    fun getAddressLiveData(): LiveData<Address> = addressLiveData
+
+    fun getExceptionsLiveData(): LiveData<Event<Throwable>> = exceptionsLiveData
 
     private fun subscribeToAddressChanges() {
         subscription = addressInteractor.getAddressChangesStream()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    addressLiveData.value = it
+                    if (it.value != null) {
+                        addressLiveData.value = it.value
+                    } else {
+                        it.error?.let { error ->
+                            exceptionsLiveData.value = Event(error)
+                        }
+                    }
                 },
                 {
                     Log.e(LOG_TAG, "Retrieving address error")

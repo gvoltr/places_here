@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.gvoltr.placeshere.R
@@ -26,9 +27,21 @@ class AddressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        subscribeToVM()
+    }
 
+    private fun subscribeToVM() {
         addressViewModel.getAddressLiveData().observe(viewLifecycleOwner, Observer {
             displayAddress(it)
+        })
+        addressViewModel.getExceptionsLiveData().observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(
+                    context,
+                    "Oops! We got an error ${it.localizedMessage}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         })
     }
 

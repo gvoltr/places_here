@@ -11,10 +11,15 @@ class AddressInteractor(
     private val locationDataSource: LocationDataSource
 ) {
 
-    fun getAddressChangesStream(): Observable<Address> {
+    fun getAddressChangesStream(): Observable<Response<Address>> {
         return locationDataSource.getLocationStream()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
-            .flatMap { addressDataSource.getAddressByLocation(it).toObservable() }
+            .flatMap { location ->
+                addressDataSource.getAddressByLocation(location)
+                    .toObservable()
+                    .map { Response(it) }
+                    .onErrorReturn { Response(error = it) }
+            }
     }
 }
