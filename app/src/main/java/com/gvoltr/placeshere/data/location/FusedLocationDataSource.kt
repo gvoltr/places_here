@@ -17,17 +17,17 @@ class FusedLocationDataSource(
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     private var locationRequest: LocationRequest = LocationRequest().apply {
-        interval = 10000 //10s
-        fastestInterval = 2000 //2s
+        interval = 30000 //10s
+        fastestInterval = 5000 //5s
         priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
     }
 
-    private var lastKnownLocation : Location? = null
+    private var lastKnownLocation: Location? = null
     private val locationStream = ReplaySubject.create<Location>()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
-           handleFreshLocationResult(locationResult)
+            handleFreshLocationResult(locationResult)
         }
     }
 
@@ -42,6 +42,11 @@ class FusedLocationDataSource(
             locationUpdatesRunning = true
             Log.d(LOG_TAG, "starting location updates")
             fusedLocationClient?.requestLocationUpdates(locationRequest, locationCallback, null)
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    lastKnownLocation = location.toAppLocation()
+                    lastKnownLocation?.let { locationStream.onNext(it) }
+                }
         }
     }
 
@@ -54,7 +59,7 @@ class FusedLocationDataSource(
     }
 
     private fun handleFreshLocationResult(locationResult: LocationResult?) {
-        Log.d(LOG_TAG,"Location updated ${locationResult?.locations}")
+        Log.d(LOG_TAG, "Location updated ${locationResult?.locations}")
         locationResult ?: return
         lastKnownLocation = locationResult.locations.last().toAppLocation()
         lastKnownLocation?.let { locationStream.onNext(it) }

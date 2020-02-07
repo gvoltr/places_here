@@ -105,7 +105,7 @@ class PlacesViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { newPlaces ->
-                       addPlaces(newPlaces, category)
+                        addPlaces(newPlaces, category)
                     },
                     {
                         it.printStackTrace()

@@ -1,5 +1,6 @@
 package com.gvoltr.placeshere.presentation.places.view
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +41,7 @@ class PlaceAdapter(
             this.place = place
             itemView.title.text = place.title
             itemView.category.text = place.categoryTitle
-            itemView.vicinity.text = place.vicinity
+            itemView.vicinity.text = Html.fromHtml(place.vicinity)
             itemView.location.text = itemView.resources.getString(
                 R.string.label_location_details,
                 place.location.latitude,

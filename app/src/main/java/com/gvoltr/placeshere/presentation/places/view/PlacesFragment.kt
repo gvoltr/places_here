@@ -87,7 +87,7 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
             override fun onTabUnselected(tab: TabLayout.Tab) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                when(tab.position) {
+                when (tab.position) {
                     0 -> placesViewModel.mapModeSelected()
                     1 -> placesViewModel.listModeSelected()
                 }
@@ -119,7 +119,6 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupMap() {
-        map?.isMyLocationEnabled = true
         map?.uiSettings?.isZoomControlsEnabled = true
         map?.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
 
@@ -133,6 +132,8 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun moveMapToLocation(location: Location) {
+        // initialize my location when we are sure there is location permission granted
+        map?.isMyLocationEnabled = true
         map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), 13f))
     }
 
@@ -148,7 +149,7 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun displayViewMode(viewMode: ViewMode) {
-        when(viewMode) {
+        when (viewMode) {
             is ViewMode.MapMode -> {
                 mapFragment.visibility = View.VISIBLE
                 placesList.visibility = View.GONE
