@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gvoltr.placeshere.data.entity.category.PlaceCategory
+import com.gvoltr.placeshere.data.entity.place.Place
 import com.gvoltr.placeshere.domain.LocationInteractor
 import com.gvoltr.placeshere.domain.PlaceCategoriesInteractor
 import com.gvoltr.placeshere.domain.PlacesByCategoryInteractor
@@ -21,6 +23,9 @@ class PlacesViewModel(
 
     private val subscriptions = CompositeDisposable()
     private val placeCategoriesLivaData = MutableLiveData<List<PlaceCategoryItem>>()
+    private val placesLiveData = MutableLiveData<List<Place>>()
+    //In memory cache for loaded places. Used for easy places deletion by category
+    private val loadedPlaces = HashMap<String, List<Place>>()
 
     init {
         getCategoriesForLocation()
@@ -33,24 +38,16 @@ class PlacesViewModel(
 
     fun getPlaceCategoriesLiveData(): LiveData<List<PlaceCategoryItem>> = placeCategoriesLivaData
 
-    fun categorySelected(placeCategory: PlaceCategoryItem) {
-        placeCategory.checked = true
-        subscriptions.add(
-            placesByCategoryInteractor.loadPlacesForCategories(placeCategory.placeCategory.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                    },
-                    {
-                        it.printStackTrace()
-                    })
-        )
+    fun getPlacesLiveData(): LiveData<List<Place>> = placesLiveData
+
+    fun categorySelected(placeCategoryItem: PlaceCategoryItem) {
+        placeCategoryItem.checked = true
+        loadCategory(placeCategoryItem.placeCategory)
     }
 
-    fun categoryUnselected(placeCategory: PlaceCategoryItem) {
-        placeCategory.checked = false
-
+    fun categoryUnselected(placeCategoryItem: PlaceCategoryItem) {
+        placeCategoryItem.checked = false
+        removePlacesOfCategory(placeCategoryItem.placeCategory)
     }
 
     private fun getCategoriesForLocation() {
@@ -59,7 +56,6 @@ class PlacesViewModel(
             .firstOrError()
             .subscribe(
                 {
-                    Log.d("DDD", "new location in view model $it")
                     loadPlaceCategories()
                 },
                 {
@@ -82,5 +78,34 @@ class PlacesViewModel(
                         it.printStackTrace()
                     })
         )
+    }
+
+    private fun loadCategory(category: PlaceCategory) {
+        subscriptions.add(
+            placesByCategoryInteractor.loadPlacesForCategories(category.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { newPlaces ->
+                       addPlaces(newPlaces, category)
+                    },
+                    {
+                        it.printStackTrace()
+                    })
+        )
+    }
+
+    private fun addPlaces(newPlaces: List<Place>, category: PlaceCategory) {
+        loadedPlaces[category.id] = newPlaces
+        displayPlaces()
+    }
+
+    private fun removePlacesOfCategory(category: PlaceCategory) {
+        loadedPlaces.remove(category.id)
+        displayPlaces()
+    }
+
+    private fun displayPlaces() {
+        placesLiveData.value = loadedPlaces.values.flatten().sortedBy { it.title }.toList()
     }
 }

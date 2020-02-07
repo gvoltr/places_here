@@ -17,6 +17,7 @@ class PlacesFragment : Fragment() {
 
     private val placesViewModel: PlacesViewModel by viewModel()
     private lateinit var categoriesAdapter: PlaceCategoriesAdapter
+    private lateinit var placesAdapter: PlaceAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,22 +35,40 @@ class PlacesFragment : Fragment() {
 
     private fun setupView() {
         setupCategoriesList()
+        setupPlacesList()
     }
 
     private fun setupCategoriesList() {
         categoriesList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        //Adapter initialization with selected and unselected callbacks
         categoriesAdapter = PlaceCategoriesAdapter(itemSelected = {
             placesViewModel.categorySelected(it)
         }, itemUnselected = {
             placesViewModel.categoryUnselected(it)
         })
+
         categoriesList.adapter = categoriesAdapter
+    }
+
+    private fun setupPlacesList() {
+        placesList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        placesAdapter = PlaceAdapter(placeClicked = {
+
+        })
+        placesList.adapter = placesAdapter
     }
 
     private fun subscribeToVM() {
         placesViewModel.getPlaceCategoriesLiveData().observe(viewLifecycleOwner, Observer {
             categoriesAdapter.submitList(it)
+        })
+        placesViewModel.getPlacesLiveData().observe(viewLifecycleOwner, Observer {
+            placesAdapter.submitList(it)
+            placesAdapter.notifyDataSetChanged()
         })
     }
 
