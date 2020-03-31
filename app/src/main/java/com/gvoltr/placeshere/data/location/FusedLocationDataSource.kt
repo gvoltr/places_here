@@ -8,7 +8,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.gvoltr.placeshere.data.entity.location.Location
 import io.reactivex.Observable
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.BehaviorSubject
 
 class FusedLocationDataSource(
     context: Context
@@ -23,7 +23,7 @@ class FusedLocationDataSource(
     }
 
     private var lastKnownLocation: Location? = null
-    private val locationStream = ReplaySubject.create<Location>()
+    private val locationStream = BehaviorSubject.create<Location>()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
