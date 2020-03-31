@@ -29,6 +29,7 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
     private lateinit var categoriesAdapter: PlaceCategoriesAdapter
     private lateinit var placesAdapter: PlaceAdapter
     private var map: GoogleMap? = null
+    private var myLocationEnabled = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -123,7 +124,7 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
         map?.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
 
         placesViewModel.getCurrentLocationLiveData().value?.let {
-            moveMapToLocation(it)
+            moveMapToLocation(it, true)
         }
 
         placesViewModel.getPlacesLiveData().value?.let {
@@ -131,10 +132,14 @@ class PlacesFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun moveMapToLocation(location: Location) {
-        // initialize my location when we are sure there is location permission granted
-        map?.isMyLocationEnabled = true
-        map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), 15f))
+    private fun moveMapToLocation(location: Location, moveAnyway: Boolean = false) {
+        // move anyway in the case of configuration change
+        if (!myLocationEnabled || moveAnyway) {
+            // initialize my location when we are sure there is location permission granted
+            map?.isMyLocationEnabled = true
+            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), 15f))
+            myLocationEnabled = true
+        }
     }
 
     private fun drawPlacesOnMap(places: List<Place>) {

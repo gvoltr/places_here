@@ -1,6 +1,5 @@
 package com.gvoltr.placeshere.presentation.places.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import com.gvoltr.placeshere.domain.places.PlacesByCategoryInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class PlacesViewModel(
     private val placeCategoriesInteractor: PlaceCategoriesInteractor,
@@ -25,15 +25,18 @@ class PlacesViewModel(
     private val subscriptions = CompositeDisposable()
     private val placeCategoriesLivaData = MutableLiveData<List<PlaceCategoryItem>>()
     private val placesLiveData = MutableLiveData<List<Place>>()
+
     //one time location event for pointing map to the right place
     private val currentLocationLiveData = MutableLiveData<Location>()
+
     //Define what should be shown map or list
     private val viewModeLiveData = MutableLiveData<ViewMode>()
+
     //In memory cache for loaded places. Used for easy places deletion by category
     private val loadedPlaces = HashMap<String, List<Place>>()
 
     init {
-        getCategoriesForLocation()
+        listenToLocationChanges()
     }
 
     override fun onCleared() {
@@ -67,37 +70,37 @@ class PlacesViewModel(
         viewModeLiveData.value = ViewMode.ListMode
     }
 
-    private fun getCategoriesForLocation() {
-        //load place categories after we got first location update to be sure that location is available
-        subscriptions.add(locationInteractor.getLocationUpdates()
-            .firstOrError()
-            .subscribe(
-                {
-                    currentLocationLiveData.value = it
-                    loadPlaceCategories()
-                },
-                {
-                    Log.e(LOG_TAG, "getCategoriesForLocation error")
-                    it.printStackTrace()
-                }
-            )
+    private fun listenToLocationChanges() {
+        subscriptions.add(
+            locationInteractor.getLocationUpdates()
+                .throttleLatest(5, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        currentLocationLiveData.value = it
+                        loadPlaceCategories()
+                    },
+                    {
+                        it.printStackTrace()
+                    })
         )
     }
 
     private fun loadPlaceCategories() {
-        subscriptions.add(
-            placeCategoriesInteractor.getCategories()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { categories ->
-                        placeCategoriesLivaData.value = categories.map { PlaceCategoryItem(it) }
-                    },
-                    {
-                        it.printStackTrace()
-                        //retry with next location update in case of error
-                        getCategoriesForLocation()
-                    })
-        )
+        // load only once
+        if (placeCategoriesLivaData.value.isNullOrEmpty()) {
+            subscriptions.add(
+                placeCategoriesInteractor.getCategories()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        { categories ->
+                            placeCategoriesLivaData.value = categories.map { PlaceCategoryItem(it) }
+                        },
+                        {
+                            it.printStackTrace()
+                        })
+            )
+        }
     }
 
     private fun loadCategory(category: PlaceCategory) {

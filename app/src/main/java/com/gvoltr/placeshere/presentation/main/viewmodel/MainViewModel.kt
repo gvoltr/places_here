@@ -12,7 +12,6 @@ class MainViewModel(
     private val permissionInteractor: PermissionInteractor
 ) : ViewModel() {
 
-
     //Used to pass events to the view that require user interaction e.g. location request
     private val interactionLiveData = MutableLiveData<Event<InteractionEvent>>()
 
@@ -46,5 +45,4 @@ class MainViewModel(
     private fun requestLocation() {
         interactionLiveData.value = Event(InteractionEvent.RequestLocation)
     }
-
 }
